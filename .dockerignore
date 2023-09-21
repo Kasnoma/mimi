@@ -1,0 +1,3 @@
+#list of files and packages to ignore to avoid conflicts
+node_modules
+npm-debug.log

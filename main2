@@ -1,0 +1,29 @@
+terraform {
+  required_providers {
+    helm = {
+      source  = "hashicorp/helm"
+      version = "2.5.0"
+    }
+  }
+}
+
+provider "helm" {
+  kubernetes {
+    # config_path = "~/.kube/config" # or use any other authentication method
+    config_path = "C:/Users/MmesomaOkaro/Downloads/K8S/Myapp/kubeconfig.yaml" # or use any other authentication method
+  }
+}
+
+resource "helm_release" "kube_prometheus" {
+  name       = "kube-prometheus-stack"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-prometheus-stack"
+  namespace  = "monitoring"
+
+  set {
+    name  = "prometheus.prometheusSpec.retention"
+    value = "30d" # Adjust retention settings as needed
+  }
+
+  # Add other configuration options as needed
+}

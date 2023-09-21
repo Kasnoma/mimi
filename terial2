@@ -1,0 +1,65 @@
+terraform {
+  required_version = ">= 0.13"
+
+  required_providers {
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.7.0"
+    }
+  }
+}
+
+
+provider "kubectl" {
+  #config_path = "~/.kube/config"  # Path to your kubeconfig file
+  config_path    = "C:/Users/MmesomaOkaro/Downloads/K8S/Myapp/kubeconfig.yaml"
+  config_context = "kind-mimi-kind-cluster"
+}
+
+resource "kubectl_manifest" "node-app_deployment" {
+  yaml_body = <<YAML
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-app
+  labels:
+    app: test-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: test-app
+  template:
+    metadata:
+      labels:
+        app: test-app
+    spec:
+      containers:
+      - name: test-app 
+        image: mimi0248/mimi-k8s:1.0
+        ports:
+        - containerPort: 3000
+
+YAML
+}
+
+resource "kubectl_manifest" "node-app_service" {
+  yaml_body = <<YAML
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-app-service
+  labels:
+    app: test-app
+spec:
+  type: NodePort
+  ports:
+   - targetPort: 80
+     port: 80
+     nodePort: 30003
+  selector:
+    app: test-app
+  
+
+YAML
+}
